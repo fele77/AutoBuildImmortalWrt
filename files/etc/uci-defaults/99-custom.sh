@@ -49,9 +49,13 @@ if [ "$count" -eq 1 ]; then
     uci commit network
 elif [ "$count" -gt 1 ]; then
     # 提取第一个接口作为WAN
-    wan_ifname=$(echo "$ifnames" | awk '{print $1}')
+    #wan_ifname=$(echo "$ifnames" | awk '{print $1}')
     # 剩余接口保留给LAN
-    lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
+    #lan_ifnames=$(echo "$ifnames" | cut -d ' ' -f2-)
+    # 提取最后一个接口作为 WAN
+    wan_ifname=$(echo "$ifnames" | awk '{print $NF}')
+    # 除最后一个外，其余接口作为 LAN
+    lan_ifnames=$(echo "$ifnames" | awk '{$NF=""; print $0}' | sed 's/[[:space:]]*$//')  
     # 设置WAN接口基础配置
     uci set network.wan=interface
     # 提取第一个接口作为WAN
